@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import express from 'express';
 import { connectDB } from './src/config/db.js';
 import seedRoutes from './src/routes/seedRoutes.js';
+import cors from 'cors';
 
 // Importamos las nuevas rutas
 import cocheRoutes from './src/routes/cocheRoutes.js';
@@ -17,6 +18,7 @@ connectDB();
 
 // 3. Middlewares
 app.use(express.json()); // Para que el servidor entienda JSON
+app.use(cors()); // Para permitir solicitudes desde otros dominios
 
 // 4. Definimos el Puerto
 // Intentará leer el puerto del archivo .env, si no existe usa el 3000
