@@ -27,8 +27,6 @@ app.get('/', (req, res) => {
 
 // Usar las rutas
 app.use('/api/admin', seedRoutes);
-app.use('/api/coches', cocheRoutes); // Inventario y Búsquedas
-app.use('/api/ventas', ventaRoutes); // Transacciones 
 
 // 6. Inicio del Servidor
 app.listen(PORT, () => {
