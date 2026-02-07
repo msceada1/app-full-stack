@@ -2,9 +2,9 @@ import express from 'express';
 
 const router = express.Router();
 
-// Ruta mínima: listar coches (placeholder)
+// Ruta mínima: listar ventas (placeholder)
 router.get('/', (req, res) => {
-	res.json({ message: 'Listado de coches (placeholder)' });
+  res.json({ message: 'Listado de ventas (placeholder)' });
 });
 
 export default router;

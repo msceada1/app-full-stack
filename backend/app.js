@@ -3,6 +3,7 @@ import express from 'express';
 import { connectDB } from './src/config/db.js';
 import seedRoutes from './src/routes/seedRoutes.js';
 
+
 // 1. Cargamos las variables de entorno
 dotenv.config();
 
@@ -27,8 +28,7 @@ app.get('/', (req, res) => {
 
 // Usar las rutas
 app.use('/api/admin', seedRoutes);
-app.use('/api/coches', cocheRoutes); // Inventario y Búsquedas
-app.use('/api/ventas', ventaRoutes); // Transacciones 
+
 
 // 6. Inicio del Servidor
 app.listen(PORT, () => {
