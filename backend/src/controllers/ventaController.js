@@ -1,4 +1,4 @@
-import Venta from '../models/Venta.js';
+import Venta from '../models/venta.js';
 import Coche from '../models/coche.js';
 
 // 2.3 Lógica de Negocio: Transacción de Venta
