@@ -46,7 +46,7 @@ api:
     - red_appfullstack
 # Montar el volumen del código fuente para desarrollo en caliente
 networks:
-  red_videojuegos:
+  red_appfullstack:
     # El tipo de red será bridge
     driver: bridge
 # Definición de volúmenes para persistencia de datos
