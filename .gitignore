@@ -1,16 +1,16 @@
 # --- BACKEND ---
-backend/node_modules/
-backend/.env
-backend/npm-debug.log*
+Backend/node_modules/
+Backend/src/.env
+Backend/npm-debug.log*
 
 # --- FRONTEND (Vite Project) ---
-frontend/vite-project/node_modules/
-frontend/vite-project/dist/
-frontend/vite-project/dist-ssr/
-frontend/vite-project/*.local
-frontend/vite-project/.env
-frontend/vite-project/.env.*
-!frontend/vite-project/.env.example
+Frontend/vite-project/node_modules/
+Frontend/vite-project/dist/
+Frontend/vite-project/dist-ssr/
+Frontend/vite-project/*.local
+Frontend/vite-project/.env
+Frontend/vite-project/.env.*
+Frontend/vite-project/.env.example
 
 # --- DOCKER & SISTEMA ---
 .DS_Store
