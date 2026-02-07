@@ -1,0 +1,16 @@
+const mongoose = require('mongoose');
+
+const CocheSchema = new mongoose.Schema({
+  marca: { type: String, required: true },
+  modelo: { type: String, required: true },
+  precio: { type: Number, required: true }, // Soporta decimales
+  stock: { type: Number, required: true, min: 0 }, // Usaremos validación para que sea entero
+  anio: { type: Number, required: true },
+  concesionario_id: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Concesionario', 
+    required: true 
+  }
+});
+
+module.exports = mongoose.model('Coche', CocheSchema);

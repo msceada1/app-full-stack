@@ -20,6 +20,11 @@ const PORT = process.env.PORT || 3000;
 // 5. Rutas (Las activaremos cuando creemos los archivos en /src/routes)
 // app.use('/api/coches', cocheRoutes);
 
+app.get('/', (req, res) => {
+    res.send('¡Bienvenido a la API del Concesionario!');
+});
+
+
 // 6. Inicio del Servidor
 app.listen(PORT, () => {
     console.log(`🚗 API del Concesionario funcionando en http://localhost:${PORT}`);
