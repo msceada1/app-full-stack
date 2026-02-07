@@ -1,0 +1,20 @@
+# --- BACKEND ---
+backend/node_modules/
+backend/.env
+backend/npm-debug.log*
+
+# --- FRONTEND (Vite Project) ---
+frontend/vite-project/node_modules/
+frontend/vite-project/dist/
+frontend/vite-project/dist-ssr/
+frontend/vite-project/*.local
+frontend/vite-project/.env
+frontend/vite-project/.env.*
+!frontend/vite-project/.env.example
+
+# --- DOCKER & SISTEMA ---
+.DS_Store
+thumbs.db
+desktop.ini
+*.log
+.vscode/
