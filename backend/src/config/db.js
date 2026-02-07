@@ -9,11 +9,7 @@ const { MONGO_URI } = process.env;
 export const connectDB = async () => {
   try {
     // Conectamos a MongoDB usando mongoose
-    await mongoose.connect(MONGO_URI, {
-        // Opciones recomendadas para la conexión
-        useNewUrlParser: true, // Analiza la cadena de conexión usando el nuevo analizador
-        useUnifiedTopology: true, // Usa el nuevo motor de topología unificada
-    });
+    await mongoose.connect(MONGO_URL);
     // Mostramos un mensaje de éxito en la consola
     console.log("Conexión a la base de datos establecida");
   } catch (error) {

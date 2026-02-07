@@ -1,20 +1,27 @@
-require('dotenv').config(); // Cargamos las variables de entorno al inicio
-const express = require('express'); // Importamos Express
-const connectDB = require('./src/config/db'); // Importamos la función
+import dotenv from 'dotenv';
+import express from 'express';
+import { connectDB } from './src/config/db.js';
 
+// 1. Cargamos las variables de entorno
+dotenv.config();
 
-const app = express(); // Creamos la aplicación de Express
+const app = express();
 
-
-// Conectamos a la Base de Datos
+// 2. Conectamos a la Base de Datos (MongoDB)
 connectDB();
 
+// 3. Middlewares
+app.use(express.json()); // Para que el servidor entienda JSON
 
-app.use(express.json()); // Middleware para parsear JSON
+// 4. Definimos el Puerto
+// Intentará leer el puerto del archivo .env, si no existe usa el 3000
+const PORT = process.env.PORT || 3000;
 
+// 5. Rutas (Las activaremos cuando creemos los archivos en /src/routes)
+// app.use('/api/coches', cocheRoutes);
 
-// Rutas (La comentamos por ahora para probar que el servidor arranca)
-// app.use('/api/juegos', require('./src/routes/videojuegoRoutes'));
-
-
-app.listen(PORT, () => console.log(`Server funcionando en puerto ${process.env.PORT} 🚀`));
+// 6. Inicio del Servidor
+app.listen(PORT, () => {
+    console.log(`🚗 API del Concesionario funcionando en http://localhost:${PORT}`);
+    console.log(`🚀 Presiona Ctrl+C para detener el servidor`);
+});
