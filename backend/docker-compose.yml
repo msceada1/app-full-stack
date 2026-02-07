@@ -6,7 +6,7 @@ db:
 # La imagen de MongoDB que se va a utilizar para la base de datos
   image: mongo:latest
   # El nombre que tendrá el contenedor (se ejecutará mongoDB en este contenedor)
-  container_name: contenedor_mongo_videojuegos_db
+  container_name: contenedor_mongo_appfullstack
   # El contenedor se reiniciará automáticamente
   restart: always
   ports:
@@ -22,7 +22,7 @@ db:
     - mongo_data:/data/db
   networks:
   # La red a la que se conectará el contenedor
-    - red_videojuegos
+    - red_appfullstack
 
 
 # Servicio de la API de videojuegos
@@ -30,7 +30,7 @@ api:
 # La construcción de la imagen se realizará a partir del Dockerfile en el directorio actual
   build: .
   # El nombre que tendrá el contenedor (se ejecutará la API en este contenedor
-  container_name: contenedor_api_videojuegos
+  container_name: contenedor_api_mongo_appfullstack
   # El contenedor se reiniciará automáticamente
   restart: always
   ports:
@@ -43,7 +43,7 @@ api:
   depends_on:
     - db # La API depende del servicio de base de datos
   networks:
-    - red_videojuegos
+    - red_appfullstack
 # Montar el volumen del código fuente para desarrollo en caliente
 networks:
   red_videojuegos:
