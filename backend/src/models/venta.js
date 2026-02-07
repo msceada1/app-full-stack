@@ -1,15 +1,15 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const VentaSchema = new mongoose.Schema({
     fecha: { type: Date, default: Date.now },
     cliente_id: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Cliente',
+        ref: 'cliente',
         required: true
     },
     coche_id: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Coche',
+        ref: 'coche',
         required: true
     },
     precio_final: { type: Number, required: true }, // Snapshot del precio acordado
@@ -20,4 +20,4 @@ const VentaSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('Venta', VentaSchema);
+export default mongoose.model('venta', VentaSchema);

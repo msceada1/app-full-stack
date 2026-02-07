@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const ConcesionarioSchema = new mongoose.Schema({
   nombre: { type: String, required: true },
@@ -6,4 +6,4 @@ const ConcesionarioSchema = new mongoose.Schema({
   CIF: { type: String, required: true, unique: true }
 });
 
-module.exports = mongoose.model('Concesionario', ConcesionarioSchema);
+export default mongoose.model('concesionario', ConcesionarioSchema);
