@@ -1,9 +1,11 @@
+import Inventory from './components/Inventory'
+
 function App() {
   return (
-    <div className="flex items-center justify-center h-screen bg-blue-500">
-      <h1 className="text-4xl font-bold text-white shadow-lg p-4 bg-black rounded-lg">
-        ¡Concesionario listo! 🚗
-      </h1>
+    <div className="min-h-screen bg-blue-500 p-8 flex flex-col items-center">
+      // El inventario de coches, que es el componente que hemos creado
+      <Inventory />
+
     </div>
   )
 }
