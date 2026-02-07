@@ -1,55 +1,52 @@
 # La versión de Docker Compose utilizada
 version: '3.8'
+
 # El bloque de servicios contiene la definición de la base de datos MongoDB
 services:
-db:
-# La imagen de MongoDB que se va a utilizar para la base de datos
-  image: mongo:latest
-  # El nombre que tendrá el contenedor (se ejecutará mongoDB en este contenedor)
-  container_name: contenedor_mongo_appfullstack
-  # El contenedor se reiniciará automáticamente
-  restart: always
-  ports:
-    - "27017:27017" # Para conectar con Compass desde fuera
+  db:
+    # La imagen de MongoDB que se va a utilizar para la base de datos
+    image: mongo:latest
+    # El nombre que tendrá el contenedor (se ejecutará MongoDB en este contenedor)
+    container_name: contenedor_mongo_appfullstack
+    # El contenedor se reiniciará automáticamente
+    restart: always
+    ports:
+      - "27017:27017" # Para conectar con Compass desde fuera
     # Las variables de entorno para acceder a la base de datos
-  environment:
-  # El nombre del usuario
-    - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
-    # La contraseña del usuario
-    - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
-  volumes:
-    # Volumen para persistir los datos de la base de datos
-    - mongo_data:/data/db
-  networks:
-  # La red a la que se conectará el contenedor
-    - red_appfullstack
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+    volumes:
+      # Volumen para persistir los datos de la base de datos
+      - mongo_data:/data/db
+    networks:
+      - red_appfullstack
 
+  # Servicio de la API
+  api:
+    # La construcción de la imagen se realizará a partir del Dockerfile en el directorio actual
+    build: .
+    # El nombre que tendrá el contenedor (se ejecutará la API en este contenedor)
+    container_name: contenedor_api_mongo_appfullstack
+    # El contenedor se reiniciará automáticamente
+    restart: always
+    ports:
+      - "3000:3000" # Exponer el puerto 3000 para acceder a la API desde fuera
+    environment:
+      - PORT=${PORT}
+      - MONGO_URL=${MONGO_URL}
+    depends_on:
+      - db # La API depende del servicio de base de datos
+    networks:
+      - red_appfullstack
+    # (Opcional) volumen para montar el código en desarrollo
+    # - ./:/usr/src/app
 
-# Servicio de la API de videojuegos
-api:
-# La construcción de la imagen se realizará a partir del Dockerfile en el directorio actual
-  build: .
-  # El nombre que tendrá el contenedor (se ejecutará la API en este contenedor
-  container_name: contenedor_api_mongo_appfullstack
-  # El contenedor se reiniciará automáticamente
-  restart: always
-  ports:
-    - "3000:3000" # Exponer el puerto 3000 para acceder a la API desde fuera
-  environment:
-    # Variable de entorno para el puerto en el que correrá la API
-    - PORT=${PORT}
-    # Variable de entorno para la URL de conexión a la base de datos MongoDB
-    - MONGO_URL=${MONGO_URL}
-  depends_on:
-    - db # La API depende del servicio de base de datos
-  networks:
-    - red_appfullstack
-# Montar el volumen del código fuente para desarrollo en caliente
+# Definición de redes y volúmenes
 networks:
   red_appfullstack:
-    # El tipo de red será bridge
     driver: bridge
-# Definición de volúmenes para persistencia de datos
+
 volumes:
-  # Volumen para los datos de MongoDB
   mongo_data:
+    driver: local

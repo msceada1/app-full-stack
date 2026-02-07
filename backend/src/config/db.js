@@ -4,16 +4,16 @@ import dotenv from "dotenv";
 // Cargamos las variables de entorno desde el archivo .env
 dotenv.config();
 // Obtenemos la URI de conexión a MongoDB desde las variables de entorno
-const { MONGO_URI } = process.env;
+const MONGO_URL = process.env.MONGO_URL || process.env.MONGO_URI;
 // Función para conectar a la base de datos
 export const connectDB = async () => {
   try {
+    // Validar que exista la URL antes de intentar conectar
+    if (!MONGO_URL) {
+      throw new Error('MONGO_URL environment variable is not set');
+    }
     // Conectamos a MongoDB usando mongoose
-    await mongoose.connect(MONGO_URI, {
-        // Opciones recomendadas para la conexión
-        useNewUrlParser: true, // Analiza la cadena de conexión usando el nuevo analizador
-        useUnifiedTopology: true, // Usa el nuevo motor de topología unificada
-    });
+    await mongoose.connect(MONGO_URL);
     // Mostramos un mensaje de éxito en la consola
     console.log("Conexión a la base de datos establecida");
   } catch (error) {

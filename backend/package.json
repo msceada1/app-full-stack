@@ -1,18 +1,25 @@
 {
-  "name": "Concesionario",
+  "name": "api-concesionario",
   "version": "1.0.0",
-  "description": "App full-stack en grupo",
-  "main": "index.js",
+  "description": "API para gestión de inventario de un concesionario de coches",
+  "main": "app.js",
+  "type": "module",
   "scripts": {
+    "start": "node app.js",
+    "dev": "node --watch app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "keywords": [
+    "express",
+    "mongodb",
+    "concesionario",
+    "api"
+  ],
   "author": "Manuel Sosa Ceada, Alberto Carmona Oller, Antonio Rodriguez Oliveira",
   "license": "ISC",
-  "type": "commonjs",
   "dependencies": {
-    "dotenv": "^17.2.4",
-    "express": "^5.2.1",
-    "mongoose": "^9.1.6"
+    "dotenv": "^16.4.7",
+    "express": "^4.18.2",
+    "mongoose": "^8.0.0"
   }
 }
