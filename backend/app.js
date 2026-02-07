@@ -28,10 +28,10 @@ app.get('/', (req, res) => {
     res.send('¡Bienvenido a la API del Concesionario!');
 });
 
-// Usar las rutas
-app.use('/api/admin', seedRoutes);
-app.use('/api/coches', cocheRoutes); // Inventario y Búsquedas
-app.use('/api/ventas', ventaRoutes); // Transacciones 
+// Rutas de la API
+app.use('/api/admin', seedRoutes);   // Semillas
+app.use('/api/coches', cocheRoutes); // Inventario y Búsquedas (Puntos 2.1 y 2.2)
+app.use('/api/ventas', ventaRoutes); // Transacciones e Historial (Puntos 2.2 y 2.3)
 
 // 6. Inicio del Servidor
 app.listen(PORT, () => {

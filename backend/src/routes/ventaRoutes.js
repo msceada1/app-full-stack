@@ -1,10 +1,10 @@
 import express from 'express';
+import { registrarVenta, historialVentas } from '../controllers/ventaController.js';
 
 const router = express.Router();
 
-// Ruta mínima: listar ventas (placeholder)
-router.get('/', (req, res) => {
-  res.json({ message: 'Listado de ventas (placeholder)' });
-});
+router.post('/', registrarVenta);
+
+router.get('/historial', historialVentas);
 
 export default router;
