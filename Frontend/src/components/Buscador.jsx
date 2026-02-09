@@ -22,7 +22,7 @@ const Buscador = () => {
     const realizarBusqueda = async (query) => {
         setCargando(true);
         try {
-            // ✅ Usamos la ruta y parámetro que definimos en el backend
+            // Usamos la ruta y parámetro que definimos en el backend
             const response = await fetch(`${API_URL}?marca=${query}`);
             const data = await response.json();
             setResultados(Array.isArray(data) ? data : []);
@@ -40,7 +40,7 @@ const Buscador = () => {
                 <p className="text-gray-500 mt-2">Encuentra tu próximo vehículo por marca en tiempo real</p>
             </div>
 
-            {/* BARRA DE BÚSQUEDA ANCHA */}
+            {/* Barra de busqueda*/}
             <div className="relative mb-10">
                 <input
                     type="text"
@@ -58,7 +58,7 @@ const Buscador = () => {
                 )}
             </div>
 
-            {/* REJILLA DE RESULTADOS (GRID) */}
+            {/* Resultados de la búsqueda */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {resultados.length > 0 ? (
                     resultados.map((coche) => (

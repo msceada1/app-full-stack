@@ -1,60 +1,80 @@
 import Venta from '../models/venta.js';
 import Coche from '../models/coche.js';
-import Cliente from '../models/cliente.js'; // Importante para buscar al cliente
+import Cliente from '../models/cliente.js';
 
+/**
+ * Registra una venta vinculando un coche con un cliente (existente o nuevo)
+ */
 export const registrarVenta = async (req, res) => {
     try {
-        const { cocheId, cliente } = req.body;
+        const { cocheId, nombreCliente, dniCliente, metodoPago } = req.body;
 
-        // 1. Buscamos el coche
+        // Validación del Vehículo
         const coche = await Coche.findById(cocheId);
-        if (!coche) return res.status(404).json({ mensaje: "Coche no encontrado" });
+        if (!coche) {
+            return res.status(404).json({ mensaje: "Vehículo no encontrado en la base de datos" });
+        }
 
-        // 2. Verificamos stock
+        // Verificamos si hay stock disponible
         if (coche.stock < 1) {
-            return res.status(400).json({ mensaje: "No hay stock disponible" });
+            return res.status(400).json({ mensaje: `Lo sentimos, el ${coche.modelo} ya no tiene stock.` });
         }
 
-        // 3. BUSCAMOS UN CLIENTE REAL (Requisito del Schema: cliente_id)
-        // Como el modal envía un nombre, buscamos un cliente que se llame así
-        // o usamos el de Iván García por defecto para que no falle el ejercicio.
-        let clienteEncontrado = await Cliente.findOne({ nombre: cliente });
+        // Buscamos primero por DNI
+        let clienteFinal = await Cliente.findOne({ dni: dniCliente });
         
-        if (!clienteEncontrado) {
-            // Si no existe, usamos el primero que haya en la DB para que el ID sea válido
-            clienteEncontrado = await Cliente.findOne();
+        // Si no lo encontramos, lo creamos automáticamente para no interrumpir el flujo
+        if (!clienteFinal) {
+            clienteFinal = new Cliente({
+                nombre: nombreCliente,
+                dni: dniCliente,
+                email: "contacto@cliente.com", // Valor por defecto
+                telefono: "000000000"          // Valor por defecto
+            });
+            await clienteFinal.save();
+            console.log(`Nuevo cliente registrado: ${nombreCliente}`);
         }
 
-        // 4. Creamos la venta con los nombres de campos EXACTOS del error
+        // Nueva instancia de venta
         const nuevaVenta = new Venta({
-            coche_id: coche._id,          // ✅ Antes era 'coche'
-            cliente_id: clienteEncontrado._id, // ✅ Requerido por el Schema
-            precio_final: coche.precio,   // ✅ Antes era 'precio_snapshot'
-            metodo_pago: "Efectivo"       // ✅ Requerido por el Schema
+            coche_id: coche._id,         
+            cliente_id: clienteFinal._id, 
+            precio_final: coche.precio,   
+            metodo_pago: metodoPago || "Efectivo" // Recibe el valor del dropdown del Modal
         });
 
-        // 5. Guardamos y actualizamos stock
+        // Restamos una unidad del inventario
         coche.stock -= 1;
+        
         await coche.save();
         await nuevaVenta.save();
 
         res.status(201).json({
-            mensaje: "Venta registrada con éxito",
-            detalle: nuevaVenta
+            mensaje: "¡Venta procesada con éxito!",
+            detalle: {
+                coche: `${coche.marca} ${coche.modelo}`,
+                cliente: clienteFinal.nombre,
+                metodo: nuevaVenta.metodo_pago,
+                stock_restante: coche.stock
+            }
         });
 
     } catch (error) {
         console.error("Error en registrarVenta:", error.message);
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ error: "Hubo un fallo al procesar la venta. Revisa los logs." });
     }
 };
 
-// Historial (Ajustado también para usar populate con los nuevos nombres)
+/**
+ * Obtiene el historial completo de ventas con datos legibles
+ */
 export const historialVentas = async (req, res) => {
     try {
         const ventas = await Venta.find()
-            .populate('coche_id', 'marca modelo')
-            .populate('cliente_id', 'nombre');
+            .sort({ fecha: -1 }) // Las más recientes primero
+            .populate('coche_id', 'marca modelo precio')
+            .populate('cliente_id', 'nombre dni');
+            
         res.json(ventas);
     } catch (error) {
         res.status(500).json({ error: error.message });

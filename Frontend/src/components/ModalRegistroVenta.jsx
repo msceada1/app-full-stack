@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 
 const ModalRegistroVenta = ({ isOpen, onClose, cocheSeleccionado, actualizarTabla }) => {
-    // Estado para los datos del cliente
     const [formData, setFormData] = useState({
         clienteNombre: '',
         clienteDNI: '',
+        metodoPago: 'Efectivo' // Valor por defecto seguro
     });
 
     // Si el modal no está abierto o no hay coche, no renderizamos nada
@@ -17,10 +17,11 @@ const ModalRegistroVenta = ({ isOpen, onClose, cocheSeleccionado, actualizarTabl
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // ✅ Estructura que espera tu backend
         const ventaData = {
-            cocheId: cocheSeleccionado._id, // Usamos _id de MongoDB
-            cliente: formData.clienteNombre  // El backend lo guarda en el campo 'cliente'
+            cocheId: cocheSeleccionado._id,
+            nombreCliente: formData.clienteNombre,
+            dniCliente: formData.clienteDNI,
+            metodoPago: formData.metodoPago
         };
 
         try {
@@ -33,34 +34,35 @@ const ModalRegistroVenta = ({ isOpen, onClose, cocheSeleccionado, actualizarTabl
             const data = await response.json();
 
             if (response.ok) {
-                alert(`✅ ¡Éxito! El stock de ${cocheSeleccionado.modelo} ha bajado.`);
-                actualizarTabla(); // Refresca el inventario en el dashboard
-                setFormData({ clienteNombre: '', clienteDNI: '' }); // Limpiar formulario
+                alert(`¡Venta realizada! El ${cocheSeleccionado.modelo} ha sido vendido por ${formData.metodoPago}.`);
+                actualizarTabla(); // Refresca el inventario
+                
+                // Reseteamos el formulario al estado inicial
+                setFormData({ clienteNombre: '', clienteDNI: '', metodoPago: 'Efectivo' }); 
                 onClose(); // Cerrar modal
             } else {
-                alert(`❌ Error: ${data.mensaje || "No se pudo realizar la venta"}`);
+                alert(`Error: ${data.mensaje || "No se pudo realizar la venta"}`);
             }
         } catch (error) {
             console.error("Error al registrar la venta:", error);
-            alert("❌ Error de conexión. Revisa que el backend esté corriendo.");
+            alert("Error de conexión. Revisa que el backend esté corriendo.");
         }
     };
 
     return (
-        // Fondo oscurecido (Overlay)
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 backdrop-blur-sm p-4">
             
-            {/* Contenedor del Modal */}
+            {/* Contenedor del modal */}
             <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden transform transition-all border border-gray-100">
                 
-                {/* Cabecera Azul */}
+                {/* Cabecera azul */}
                 <div className="bg-gradient-to-r from-blue-600 to-blue-700 p-6 text-white text-center">
                     <h2 className="text-2xl font-black uppercase tracking-tighter">Registrar Operación</h2>
                     <p className="text-blue-100 text-sm mt-1">Completa los datos para finalizar la venta</p>
                 </div>
 
                 <div className="p-8">
-                    {/* Resumen del Coche Seleccionado */}
+                    {/* Resumen del coche seleccionado */}
                     <div className="mb-8 p-5 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
                         <div className="flex justify-between items-center">
                             <div>
@@ -78,8 +80,10 @@ const ModalRegistroVenta = ({ isOpen, onClose, cocheSeleccionado, actualizarTabl
                         </div>
                     </div>
 
-                    {/* Formulario de Venta */}
+                    {/* Formulario de venta */}
                     <form onSubmit={handleSubmit} className="space-y-5">
+                        
+                        {/* Input nombre */}
                         <div>
                             <label className="block text-sm font-bold text-gray-700 mb-2">Nombre del Comprador</label>
                             <input
@@ -93,6 +97,7 @@ const ModalRegistroVenta = ({ isOpen, onClose, cocheSeleccionado, actualizarTabl
                             />
                         </div>
 
+                        {/* Input DNI */}
                         <div>
                             <label className="block text-sm font-bold text-gray-700 mb-2">DNI / NIE / CIF</label>
                             <input
@@ -106,7 +111,28 @@ const ModalRegistroVenta = ({ isOpen, onClose, cocheSeleccionado, actualizarTabl
                             />
                         </div>
 
-                        {/* Acciones */}
+                        {/* Método de Pago */}
+                        <div>
+                            <label className="block text-sm font-bold text-gray-700 mb-2">Método de Pago</label>
+                            <div className="relative">
+                                <select
+                                    name="metodoPago"
+                                    value={formData.metodoPago}
+                                    onChange={handleChange}
+                                    className="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-xl focus:border-blue-500 focus:bg-white outline-none transition-all appearance-none cursor-pointer"
+                                >
+                                    <option value="Efectivo">Efectivo 💵</option>
+                                    <option value="Tarjeta">Tarjeta 💳</option>
+                                    <option value="Financiación">Financiación 🏦</option>
+                                </select>
+                                {/* Flecha hacia abajo */}
+                                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-700">
+                                    <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Botones de Acción */}
                         <div className="flex gap-4 pt-6">
                             <button 
                                 type="button" 

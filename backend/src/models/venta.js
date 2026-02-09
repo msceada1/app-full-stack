@@ -12,7 +12,7 @@ const VentaSchema = new mongoose.Schema({
         ref: 'coche',
         required: true
     },
-    precio_final: { type: Number, required: true }, // Snapshot del precio acordado
+    precio_final: { type: Number, required: true },
     metodo_pago: {
         type: String,
         enum: ['Efectivo', 'Tarjeta', 'Financiación'],

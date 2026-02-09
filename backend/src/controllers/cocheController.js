@@ -1,6 +1,6 @@
 import Coche from '../models/coche.js';
 
-// 2.1 POST: Insertar vehículo con validación
+// Insertar vehículo con validación - POST
 export const crearCoche = async (req, res) => {
     try {
         const { marca, modelo, precio, stock } = req.body;
@@ -18,12 +18,12 @@ export const crearCoche = async (req, res) => {
     }
 };
 
-// 2.1 PUT: Actualizar información
+// Actualizar información PUT
 export const actualizarCoche = async (req, res) => {
     try {
         const cocheActualizado = await Coche.findByIdAndUpdate(
-            req.params.id, 
-            req.body, 
+            req.params.id,
+            req.body,
             { new: true } // Devuelve el objeto ya modificado
         );
         res.json(cocheActualizado);
@@ -32,7 +32,7 @@ export const actualizarCoche = async (req, res) => {
     }
 };
 
-// 2.1 DELETE: Eliminar vehículo
+// Eliminar vehículo DELETE
 export const eliminarCoche = async (req, res) => {
     try {
         await Coche.findByIdAndDelete(req.params.id);
@@ -42,7 +42,7 @@ export const eliminarCoche = async (req, res) => {
     }
 };
 
-// 2.2 GET: Búsqueda avanzada con filtros (Query Strings)
+// Búsqueda avanzada con Query Strings GET
 export const buscarCoches = async (req, res) => {
     try {
         const { precio_max, marca, disponibilidad } = req.query;
@@ -60,7 +60,9 @@ export const buscarCoches = async (req, res) => {
 
         // Filtro por disponibilidad (stock > 0)
         if (disponibilidad === 'true') {
-            query.stock = { $gt: 0 };
+            query.stock = { $gt: 0 }; // Stock mayor a 0
+        } else if (disponibilidad === 'false') {
+            query.stock = { $lte: 0 };  // Stock menor o igual a 0 
         }
 
         const coches = await Coche.find(query);

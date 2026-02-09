@@ -1,16 +1,16 @@
 import { useState, useEffect } from 'react';
-import ModalRegistroVenta from './ModalRegistroVenta'; // 1. IMPORTANTE: Importar el modal
+import ModalRegistroVenta from './ModalRegistroVenta';
 
 export default function Inventory() {
     const [coches, setCoches] = useState([]);
     const [nuevoCoche, setNuevoCoche] = useState({ marca: '', modelo: '', precio: '', stock: '', anio: '' });
     const [cargando, setCargando] = useState(false);
 
-    // --- 2. ESTADOS PARA CONTROLAR EL MODAL ---
     const [modalAbierto, setModalAbierto] = useState(false);
     const [cocheParaVender, setCocheParaVender] = useState(null);
 
     const API_URL = 'http://localhost:3000/api/coches';
+
 
     const obtenerCoches = async () => {
         setCargando(true);
@@ -27,6 +27,7 @@ export default function Inventory() {
     };
 
     useEffect(() => { obtenerCoches(); }, []);
+
 
     const agregarCoche = async (e) => {
         e.preventDefault();
@@ -46,16 +47,63 @@ export default function Inventory() {
             });
 
             if (respuesta.ok) {
-                alert("✅ ¡Coche guardado correctamente!");
+                alert("¡Coche guardado correctamente!");
                 setNuevoCoche({ marca: '', modelo: '', precio: '', stock: '', anio: '' });
-                setTimeout(obtenerCoches, 500); 
+                obtenerCoches(); // Recarga inmediata
             }
         } catch (error) {
-            alert("❌ Error de conexión");
+            alert("Error de conexión");
         }
     };
 
-    // --- 3. FUNCIÓN PARA ABRIR EL MODAL ---
+    const eliminarCoche = async (id) => {
+        if (!window.confirm("¿Estás seguro de que deseas eliminar este vehículo? Esta acción no se puede deshacer.")) {
+            return;
+        }
+
+        try {
+            const respuesta = await fetch(`${API_URL}/${id}`, {
+                method: 'DELETE',
+            });
+
+            if (respuesta.ok) {
+                alert("Vehículo eliminado correctamente");
+                obtenerCoches(); // Refrescamos la lista
+            } else {
+                alert("No se pudo eliminar el vehículo");
+            }
+        } catch (error) {
+            console.error(error);
+            alert("Error al intentar eliminar");
+        }
+    };
+
+
+    const editarPrecio = async (id, precioActual) => {
+        const nuevoPrecio = prompt("Introduce el nuevo precio:", precioActual);
+
+        // Validamos que haya valor y que sea numérico
+        if (nuevoPrecio !== null && nuevoPrecio !== "" && !isNaN(nuevoPrecio)) {
+            try {
+                const respuesta = await fetch(`${API_URL}/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ precio: Number(nuevoPrecio) })
+                });
+
+                if (respuesta.ok) {
+                    alert("Precio actualizado");
+                    obtenerCoches();
+                } else {
+                    alert("Error al actualizar el precio");
+                }
+            } catch (error) {
+                console.error(error);
+                alert("Error de conexión");
+            }
+        }
+    };
+
     const abrirVenta = (coche) => {
         setCocheParaVender(coche);
         setModalAbierto(true);
@@ -98,14 +146,34 @@ export default function Inventory() {
                                 <td className="px-6 py-4 text-sm text-green-600 font-bold">{coche.precio}€</td>
                                 <td className="px-6 py-4 text-sm text-gray-600">{coche.stock}</td>
                                 <td className="px-6 py-4 text-center">
-                                    {/* --- 4. BOTÓN PARA ABRIR EL MODAL --- */}
-                                    <button 
-                                        onClick={() => abrirVenta(coche)}
-                                        className="bg-green-100 text-green-700 px-4 py-1 rounded-full text-sm font-black hover:bg-green-600 hover:text-white transition-all"
-                                        disabled={coche.stock <= 0}
-                                    >
-                                        {coche.stock > 0 ? "💰 VENDER" : "SIN STOCK"}
-                                    </button>
+                                    <div className="flex justify-center items-center gap-2">
+                                        {/* boton vender */}
+                                        <button 
+                                            onClick={() => abrirVenta(coche)}
+                                            className="bg-green-100 text-green-700 px-3 py-1 rounded text-sm font-bold hover:bg-green-600 hover:text-white transition-all disabled:opacity-50"
+                                            disabled={coche.stock <= 0}
+                                        >
+                                            {coche.stock > 0 ? "VENDER" : "AGOTADO"}
+                                        </button>
+
+                                        {/* boton editar */}
+                                        <button 
+                                            onClick={() => editarPrecio(coche._id, coche.precio)}
+                                            className="bg-yellow-100 text-yellow-700 px-2 py-1 rounded hover:bg-yellow-500 hover:text-white transition-all"
+                                            title="Editar Precio"
+                                        >
+                                            ✏️
+                                        </button>
+
+                                        {/* boton eliminar */}
+                                        <button 
+                                            onClick={() => eliminarCoche(coche._id)}
+                                            className="bg-red-100 text-red-700 px-2 py-1 rounded hover:bg-red-600 hover:text-white transition-all"
+                                            title="Eliminar Coche"
+                                        >
+                                            🗑️
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         ))}
@@ -113,7 +181,6 @@ export default function Inventory() {
                 </table>
             </div>
 
-            {/* --- 5. EL COMPONENTE MODAL DEBE IR AQUÍ (AL FINAL) --- */}
             <ModalRegistroVenta 
                 isOpen={modalAbierto} 
                 onClose={() => setModalAbierto(false)} 

@@ -4,7 +4,7 @@ const CocheSchema = new mongoose.Schema({
   marca: { type: String, required: true },
   modelo: { type: String, required: true },
   precio: { type: Number, required: true }, // Soporta decimales
-  stock: { type: Number, required: true, min: 0 }, // Usaremos validación para que sea entero
+  stock: { type: Number, required: true, min: 0 },
   anio: { type: Number, required: true },
   concesionario_id: { 
     type: mongoose.Schema.Types.ObjectId, 

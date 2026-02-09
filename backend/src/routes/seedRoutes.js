@@ -62,5 +62,4 @@ router.post('/reset-db', async (req, res) => {
     }
 });
 
-// La exportación por defecto para que app.js lo reconozca
 export default router;
